@@ -1,0 +1,24 @@
+# ignore my commonly used 'res' file
+res
+
+# ignore anything ending with ~
+*~
+
+# ignore any zips and archives
+*.zip
+*.tar.gz
+
+# ignore SciTE properties and session files
+*.properties
+*.session
+
+# ignore log files
+*.log
+
+# ignore rpi-image-tool stuff
+*.img
+
+# .mo files
+*.mo
+
+
