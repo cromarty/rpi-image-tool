@@ -1,4 +1,10 @@
-PREFIX = /usr/local
+PREFIX        = /usr/local
+DESTDIR       =
+INSTALL       = /usr/bin/env install
+bindir        = $(PREFIX)/bin
+localedir     = $(PREFIX)/share/locale
+#mandir        = $(PREFIX)/share/man
+
 
 po :
 	$(MAKE) -C i18n
@@ -7,20 +13,21 @@ po :
 install : sh mo
 
 sh :
-	install -m0755 -t $(PREFIX)/bin rpi-image-tool
-	install -m0644 -t $(PREFIX)/bin rpi-image-tool.lib
+	$(INSTALL) -m0755 -t $(DESTDIR)$(bindir) rpi-image-tool
+	install -m0644 -t $(DESTDIR)$(bindir) rpi-image-tool.lib
 
 
 mo : en
 
 en :
-	install -m0755 -d $(PREFIX)/share/locale/$@/LC_MESSAGES
-	install -m0644 -t $(PREFIX)/share/locale/$@/LC_MESSAGES ./locale/$@/LC_MESSAGES/rpi-image-tool.mo
+	echo "running en"
+	$(INSTALL) -m0755 -d $(DESTDIR)$(localedir)/$@/LC_MESSAGES
+	$(INSTALL) -m0644 -t $(DESTDIR)$(localedir)/$@/LC_MESSAGES ./locale/$@/LC_MESSAGES/rpi-image-tool.mo
 
 
 
 
-uninstall :
-	find $(PREFIX) -name "rpi-image-tool*" -exec rm {} \;
+#uninstall :
+#	find $(PREFIX) -name "rpi-image-tool*" -exec rm {} \;
 
 

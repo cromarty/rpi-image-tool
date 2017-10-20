@@ -11,15 +11,14 @@ makedepends=('git')
 source=(${pkgname}::'git://github.com/cromarty/rpi-image-tool.git')
 md5sums=('SKIP')
 
+
 build() {
-  cd  "${srcdir}/${pkgname}"
-  make
+  cd "$srcdir/$pkgname/"
+  make PREFIX=/usr/local
 }
 
 package() {
-  cd "${srcdir}/${pkgname}"
-  make \
-       DESTDIR="${pkgdir}" \
-       exec_prefix="/usr/local"
-       install
+	echo "starting package function"
+  cd "$srcdir/$pkgname/"
+  make DESTDIR="pkgdir" install
 }
