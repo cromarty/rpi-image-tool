@@ -1,10 +1,26 @@
-PREFIX = /usr/local/bin
+PREFIX = /usr/local
 
-install:
-	install -m0755 rpi-image-tool $(PREFIX)/rpi-image-tool
-	install -m0755 rpi-image-tool.lib $(PREFIX)/rpi-image-tool.lib
+po :
+	$(MAKE) -C i18n
 
-clean:
-	rm $(PREFIX)/rpi-image-tool
-	rm $(PREFIX)/rpi-image-tool.lib
+
+install : sh mo
+
+sh :
+	install -m0755 -t $(PREFIX)/bin rpi-image-tool
+	install -m0644 -t $(PREFIX)/bin rpi-image-tool.lib
+
+
+mo : en
+
+en :
+	install -m0755 -d $(PREFIX)/share/locale/$@/LC_MESSAGES
+	install -m0644 -t $(PREFIX)/share/locale/$@/LC_MESSAGES ./locale/$@/LC_MESSAGES/rpi-image-tool.mo
+
+
+
+
+uninstall :
+	find $(PREFIX) -name "rpi-image-tool*" -exec rm {} \;
+
 
