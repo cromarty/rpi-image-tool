@@ -17,9 +17,7 @@ usage() {
 
 #-- Main code
 
-check_root RESULT
-
-if [ ${RESULT} != 1 ]; then
+if ! check_root ; then
 	PROGNAME=$0
 	echo $(eval_gettext "Script must be run as root, try: sudo \$PROGNAME") ; echo
 	exit 1
