@@ -13,13 +13,11 @@ md5sums=('SKIP')
 
 
 build() {
-	echo "starting build function"
   cd "$srcdir/$pkgname/"
   make PREFIX=/usr/local
 }
 
 package() {
-	echo "starting package function"
   cd "$srcdir/$pkgname/"
   make PREFIX=/usr/local DESTDIR="$pkgdir" install
 }
