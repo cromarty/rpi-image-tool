@@ -1,0 +1,25 @@
+# Author and maintainer: Mike Ray <mike.ray@btinternet.com>
+pkgname=rpi-image-tool
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='Tool to create, mount, and manipulate Raspberry Pi .img files'
+arch=('any')
+url="http://github.com/cromarty/rpi-image-tool.git"
+license=('GPL3')
+depends=('parted' 'multipath-tools')
+makedepends=('git')
+source=(${pkgname}::'git://github.com/cromarty/rpi-image-tool.git')
+md5sums=('SKIP')
+
+build() {
+  cd  "${srcdir}/${pkgname}"
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}"
+  make \
+       DESTDIR="${pkgdir}" \
+       exec_prefix="/usr/local"
+       install
+}
