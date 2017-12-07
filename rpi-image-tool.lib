@@ -56,7 +56,8 @@ loop_devices() {
 mount_device() {
 	local WORKDIR=${1}
 	local DEVICE=${2}
-	local ROOTMP=${3}
+	local BOOTMP=${3}
+	local ROOTMP=${4}
 
 	[ -b "${DEVICE}" ] || { echo "Supplied device name ${DEVICE} does not exist or is not a block device"; exit 1; }
 
