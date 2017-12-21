@@ -15,7 +15,8 @@ install : sh mo
 sh :
 	$(INSTALL) -d $(DESTDIR)$(bindir)
 	$(INSTALL) -m0755 -t $(DESTDIR)$(bindir) rpi-image-tool
-	install -m0644 -t $(DESTDIR)$(bindir) rpi-image-tool.lib
+	${INSTALL} -m0644 -t $(DESTDIR)$(bindir) rpi-image-tool.lib
+	$(INSTALL) -m0755 -t $(DESTDIR)$(bindir) clone-running-pi
 
 
 mo : en
