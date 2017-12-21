@@ -22,7 +22,7 @@ export TEXTDOMAINDIR=/usr/local/share/locale
 
 . gettext.sh
 
-. ./rpi-image-tool.lib
+. rpi-image-tool.lib
 
 
 
@@ -76,9 +76,9 @@ find /home -name .bash_history -exec truncate -s 0 {} \;
 # rsync /boot
 #
 
-rsync -Pazhxv /boot/* ${bootmp}
+rsync -Pazhxv /boot/* "${bootmp}"
 
-exit 0
+
 
 
 
@@ -86,11 +86,17 @@ exit 0
 # sync root file-system, exclude /boot
 #
 
+socketlist=$(mktemp)
+find / -type s > "${socketlist}"
+
+
+
 rsync -Pazhxv \
---exclude=/run \
---exclude=/dev \
---exclude=/lost+found \
---exclude=/tmp \
---exclude=/proc \
---exclude=/boot \
---exclude=/sys / where_to
+	-X "${socketlist}" \
+	--exclude=/run \
+	--exclude=/dev \
+	--exclude=/lost+found \
+	--exclude=/tmp \
+	--exclude=/proc \
+	--exclude=/boot \
+	--exclude=/sys /* "${rootmp}"
