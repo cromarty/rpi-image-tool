@@ -1,5 +1,23 @@
 
 
+
+
+out() {
+	printf "$1 $2\n" "${@:3}"
+}
+
+error() {
+	out "ERROR:" "$@"
+} >&2
+
+die() {
+	error "$@"
+	usage
+	exit 1
+}
+
+
+
 check_root() {
 	(( EUID == 0 )) || return 1
 	return 0
