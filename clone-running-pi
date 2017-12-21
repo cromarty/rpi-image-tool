@@ -28,7 +28,7 @@ export TEXTDOMAINDIR=/usr/local/share/locale
 
 usage() {
 	scriptname=$0
-	echo -e $(eval_gettext "Usage: \$scriptname")
+	echo -e $(eval_gettext "Usage: \$scriptname -b <boot mount-point> -r <root mount-point>")
 } >&2
 
 #-- main code
@@ -68,10 +68,6 @@ done
 [ -z ${rootmp} ] && die "Root mount-point not set"
 
 
-# Truncate instances of .bash_history to zero size
-find /root -name .bash_history -exec truncate -s 0 {} \;
-find /home -name .bash_history -exec truncate -s 0 {} \;
-
 
 
 #
@@ -102,3 +98,10 @@ rsync -Pazhxv \
 	--exclude=/proc \
 	--exclude=/boot \
 	--exclude=/sys /* "${rootmp}"
+
+sync
+
+
+# Truncate instances of .bash_history to zero size
+find "${rootmp}/root" -name .bash_history -exec truncate -s 0 {} \;
+find "${rootmp}/home" -name .bash_history -exec truncate -s 0 {} \;
