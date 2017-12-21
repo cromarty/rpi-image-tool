@@ -33,6 +33,8 @@ usage() {
 
 #-- main code
 
+set -e
+
 msg=$(gettext "This script must be run with root privilages")
 (( EUID == 0 )) || { echo  "${msg}" ; exit 1 ; }
 
@@ -67,7 +69,7 @@ done
 
 
 # Truncate instances of .bash_history to zero size
-find /root -name .bash_history -exec truncate -s 0 {}\;
+find /root -name .bash_history -exec truncate -s 0 {} \;
 find /home -name .bash_history -exec truncate -s 0 {} \;
 
 
