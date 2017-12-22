@@ -105,3 +105,10 @@ sync
 # Truncate instances of .bash_history to zero size
 find "${rootmp}/root" -name .bash_history -exec truncate -s 0 {} \;
 find "${rootmp}/home" -name .bash_history -exec truncate -s 0 {} \;
+
+# Copy the backed up cmdline.txt file to cmdline.txt if it exists
+# cmdline.txt.bak contains the kernel setting to run the auto-expansion script
+if [ -f ${bootmp}/cmdline.txt.bak ]; then
+	cp ${bootmp}/cmdline.txt.bak ${bootmp}/cmdline.txt
+fi
+
