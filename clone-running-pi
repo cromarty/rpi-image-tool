@@ -111,8 +111,8 @@ find / -type s > "${socketlist}"
 rsync  	--archive --verbose \
 		--progress --human-readable --one-file-system \
 		-exclude-from="${socketlist}" \
-		--exclude=/run \
-		--exclude=/dev \
+		--exclude=/run/* \
+		--exclude=/dev/* \
 		--exclude=/lost+found \
 		--exclude=/tmp \
 		--exclude=/proc \
