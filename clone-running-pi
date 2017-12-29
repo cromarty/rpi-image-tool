@@ -30,12 +30,12 @@
 # rsync switches:
 #
 # -P: show progress 
-# -a: archive mode 
+# -a,--archive: archive mode 
 # -z: compress during transfer 
-# -h: output numbers in a human-readable format 
+# -h,--human-readable: output numbers in a human-readable format 
 # -m: prune empty directories 
-# -x: limit to one file-system 
-# -v: verbose
+# -x,--one-file-system: limit to one file-system 
+# -v,--verbose: verbose
 
 
 export TEXTDOMAIN=rpi-image-tool
@@ -46,10 +46,9 @@ export TEXTDOMAINDIR=/usr/local/share/locale
 . rpi-image-tool.lib
 
 
-
 usage() {
-	scriptname=$0
-	echo -e $(eval_gettext "Usage: \$scriptname -b <boot mount-point> -r <root mount-point>")
+scriptname=$0
+echo -e $(eval_gettext "Usage: \$scriptname -b <boot mount-point> -r <root mount-point>")
 } >&2
 
 #-- main code
@@ -77,7 +76,7 @@ do
 		usage
 		exit 1
 	;;
-	(?)
+		(?)
 		usage
 		exit 1
 	;;
@@ -95,10 +94,9 @@ done
 # rsync /boot
 #
 
-rsync --archive --verbose --progress --one-file-system --human-readable /boot/* "${bootmp}"
-
-
-
+rsync --archive --verbose \
+		--progress --one-file-system \
+		--human-readable /boot/* "${bootmp}"
 
 
 #
@@ -111,15 +109,15 @@ find / -type s > "${socketlist}"
 
 
 rsync  	--archive --verbose \
-	--progress --human-readable --one-file-system \
-	-exclude-from="${socketlist}" \
-	--exclude=/run \
-	--exclude=/dev \
-	--exclude=/lost+found \
-	--exclude=/tmp \
-	--exclude=/proc \
-	--exclude=/boot \
-	--exclude=/sys /* "${rootmp}"
+		--progress --human-readable --one-file-system \
+		-exclude-from="${socketlist}" \
+		--exclude=/run \
+		--exclude=/dev \
+		--exclude=/lost+found \
+		--exclude=/tmp \
+		--exclude=/proc \
+		--exclude=/boot \
+		--exclude=/sys / "${rootmp}"
 
 sync
 
@@ -133,4 +131,6 @@ find "${rootmp}/home" -name .bash_history -exec truncate -s 0 {} \;
 if [ -f ${bootmp}/cmdline.txt.bak ]; then
 	cp ${bootmp}/cmdline.txt.bak ${bootmp}/cmdline.txt
 fi
+
+exit 0
 
