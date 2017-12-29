@@ -116,7 +116,6 @@ rsync  	--archive --verbose \
 		--exclude=/lost+found \
 		--exclude=/tmp \
 		--exclude=/proc \
-		--exclude=/boot \
 		--exclude=/sys / "${rootmp}"
 
 sync
