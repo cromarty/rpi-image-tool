@@ -27,15 +27,6 @@
 #
 # Make sure the target IS on a different file-system to the root file-system
 #
-# rsync switches:
-#
-# -P: show progress 
-# -a,--archive: archive mode 
-# -z: compress during transfer 
-# -h,--human-readable: output numbers in a human-readable format 
-# -m: prune empty directories 
-# -x,--one-file-system: limit to one file-system 
-# -v,--verbose: verbose
 
 
 export TEXTDOMAIN=rpi-image-tool
@@ -89,34 +80,19 @@ done
 
 
 
-
-#
-# rsync /boot
-#
-
 rsync --archive --verbose \
 		--progress --one-file-system \
 		--human-readable /boot/* "${bootmp}"
 
 
-#
-# sync root file-system, exclude /boot
-#
-
 socketlist=$(mktemp)
 find / -type s > "${socketlist}"
-
 
 
 rsync  	--archive --verbose \
 		--progress --human-readable --one-file-system \
 		-exclude-from="${socketlist}" \
-		--exclude=/run/* \
-		--exclude=/dev/* \
-		--exclude=/lost+found \
-		--exclude=/tmp \
-		--exclude=/proc \
-		--exclude=/sys / "${rootmp}"
+		--exclude=/lost+found / "${rootmp}"
 
 sync
 
