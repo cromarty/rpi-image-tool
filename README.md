@@ -3,7 +3,7 @@
 
 A tool for:
 
-* Creating new and empty `.img` files with two partions.
+* Creating new and empty `.img` files with two partitions.
 * Mounting created or existing `.img` files.
 * Un-mounting the same.
 
