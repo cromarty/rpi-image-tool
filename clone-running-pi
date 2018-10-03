@@ -101,11 +101,14 @@ sync
 find "${rootmp}/root" -name .bash_history -exec truncate -s 0 {} \;
 find "${rootmp}/home" -name .bash_history -exec truncate -s 0 {} \;
 
-# Copy the backed up cmdline.txt file to cmdline.txt if it exists
-# cmdline.txt.bak contains the kernel setting to run the auto-expansion script
-if [ -f ${bootmp}/cmdline.txt.bak ]; then
-	cp ${bootmp}/cmdline.txt.bak ${bootmp}/cmdline.txt
+
+if [ -e "${rootmp}/usr/lib/raspi-config/init_resize.sh" ]; then
+	if ! grep " init=/usr/lib/raspi-config/init_resize\.sh" cmdline.txt >/dev/null ; then
+		sed -i "s|\(.*\)|\1 init=/usr/lib/raspi-config/init_resize.sh|" cmdline.txt
+	fi
 fi
+
+
 
 exit 0
 
