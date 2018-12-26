@@ -22,7 +22,6 @@
 #--code--
 
 export TEXTDOMAIN=rpi-image-tool
-#export TEXTDOMAINDIR=$PWD/locale
 export TEXTDOMAINDIR=/usr/local/share/locale
 
 . gettext.sh
@@ -56,7 +55,7 @@ BOOTMOUNTPOINT=boot
 ROOTMOUNTPOINT=root
 
 
-while getopts ':C:D:M:N:c:hs:w:z:' flag ; do
+while getopts ':C:D:F:I:M:N:c:hs:w:z:' flag ; do
 	case $flag in
 	h)
 		usage
@@ -70,6 +69,16 @@ C)
 	D)
 		FUNCTION=mountdevice
 		DEVICE=${OPTARG}
+	;;
+	F)
+		FUNCTION=fixpartuuids
+		WORKDIR=${OPTARG}
+		break 2
+	;;
+	I)
+		FUNCTION=installresize
+		WORKDIR=${OPTARG}
+		break 2
 	;;
 	M)
 		FUNCTION=mountimage
@@ -128,7 +137,12 @@ fi
 case ${FUNCTION} in
 	cleanup)
 		clean_up ${WORKDIR}
-# ${BOOTMP} ${ROOTMP}
+	;;
+	fixpartuuids)
+		fix_partuuids ${WORKDIR}
+	;;
+	installresize)
+		install_init_resize_script ${WORKDIR} /usr/lib/raspi-config/init_resize.sh
 	;;
 	mountimage)
 		mount_image ${WORKDIR} ${IMAGEFILE} ${BOOTMOUNTPOINT} ${ROOTMOUNTPOINT}

@@ -53,7 +53,8 @@ clean_up() {
 		remove_loop_devices ${WORKDIR}
 	fi
 
-	rm ${WORKDIR}/rpi-image-tool-mount-points
+	[ -f ${WORKDIR}/rpi-image-tool-mount-points ] && rm ${WORKDIR}/rpi-image-tool-mount-points
+	[ -f ${WORKDIR}/rpi-image-tool-image-file ] && rm ${WORKDIR}/rpi-image-tool-image-file
 
 }
 
@@ -127,6 +128,8 @@ mount_image() {
 
 	sleep 5
 
+	echo -e $(realpath "${IMAGEFILE}") > "${WORKDIR}/rpi-image-tool-image-file"
+
 	mount_partitions ${WORKDIR} ${BOOTP} ${ROOTP} ${BOOTMP} ${ROOTMP}
 
 }
@@ -170,6 +173,8 @@ new_image() {
 
 	echo $(gettext "Running dd to make a raw (zero-filled) image") ; echo
 	dd if=/dev/zero of=${IMAGEFILE} bs=${BLOCKSIZE} count=${BLOCKCOUNT}
+
+	echo -e $(realpath ${IMAGEFILE}) > ${WORKDIR}/rpi-image-tool-image-file
 
 	echo $(gettext "Partitioning the raw image file") ; echo
 	parted "${IMAGEFILE}" --script -- mklabel msdos
@@ -317,6 +322,52 @@ validate_split() {
 	if [ $? -eq 1 ]; then
 		echo $(gettext "Bad split") ; echo
 		usage
+	fi
+
+}
+
+
+  
+fix_partuuids() {
+	local WORKDIR=$1
+
+	IMG=$(cat "${WORKDIR}/rpi-image-tool-image-file")
+
+	DISKID=$(fdisk -l ${IMG} | sed -n 's/Disk identifier: 0x\([^ ]*\)/\1/p')
+
+	BOOTMP=$(cat ${WORKDIR}/rpi-image-tool-mount-points | grep "1:" | cut -f3 -d:)
+	ROOTMP=$(cat ${WORKDIR}/rpi-image-tool-mount-points | grep "2:" | cut -f3 -d:)
+
+	CMDLINE="${BOOTMP}"/cmdline.txt
+	FSTAB="${ROOTMP}"/etc/fstab
+
+	# edit cmdline.txt with the new rootfs PARTUUID
+	echo $(gettext "Editing /boot/cmdline.txt with new rootfs PARTUUID") ; echo
+	sed -i "s|root=[^ ]*|root=PARTUUID=${DISKID}-02|" "${CMDLINE}"
+
+	# edit the two partition entries in /etc/fstab
+	echo $(gettext "Editing /etc/fstab with new PARTUUIDs for both partitions") ; echo
+	sed -i "s|PARTUUID=[0-9a-f]\+|PARTUUID=${DISKID}|" "${FSTAB}"
+
+}
+
+  
+install_init_resize_script() {
+	local WORKDIR=$1
+	local RESIZE_SCRIPT=$2
+
+	BOOTMP=$(cat ${WORKDIR}/rpi-image-tool-mount-points | grep "1:" | cut -f3 -d:)
+	CMDLINE="${BOOTMP}"/cmdline.txt
+
+	if test -w "${CMDLINE}" ; then
+		if grep -q "init=${RESIZE_SCRIPT}" "${CMDLINE}" ; then
+			echo $(gettext "The init= entry is already in the cmdline.txt file") ; echo
+		else
+			echo $(gettext "Adding init= entry to cmdline.txt") ; echo
+		sed -i "s|\(.*\)|\1 init=${RESIZE_SCRIPT}|" "${CMDLINE}"
+		fi
+	else
+		echo $(eval_gettext "The cmdline.txt file \${CMDLINE} does not exist or is not writable by the running user") ; echo
 	fi
 
 }
