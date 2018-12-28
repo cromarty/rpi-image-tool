@@ -102,12 +102,6 @@ find "${rootmp}/root" -name .bash_history -exec truncate -s 0 {} \;
 find "${rootmp}/home" -name .bash_history -exec truncate -s 0 {} \;
 
 
-if [ -e "${rootmp}/usr/lib/raspi-config/init_resize.sh" ]; then
-	if ! grep " init=/usr/lib/raspi-config/init_resize\.sh" cmdline.txt >/dev/null ; then
-		sed -i "s|\(.*\)|\1 init=/usr/lib/raspi-config/init_resize.sh|" cmdline.txt
-	fi
-fi
-
 
 
 exit 0
