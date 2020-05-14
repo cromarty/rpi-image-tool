@@ -7,7 +7,8 @@ A tool for:
 * Mounting created or existing `.img` files.
 * Un-mounting the same.
 
-All `.img` files are created with two partitions of the types required for a Raspberry Pi:
+All `.img` files are created with two partitions of the types required for a
+Raspberry Pi:
 
 1. A FAT32 bootable partition, partition number 1.
 2. An ext4 root filesystem partition, partition number 2.
